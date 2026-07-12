@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sai Vamshi Danthoju — Full-Stack &amp; Secure Systems Engineer</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;family=Roboto:wght@300;400;500;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#0a0c10;
+    --bg-soft:#111318;
+    --surface:#111318;
+    --border:rgba(255,255,255,0.08);
+    --border-strong:rgba(255,255,255,0.15);
+    --accent:#ffb86e;
+    --accent-dim:rgba(255,184,110,0.12);
+    --accent2:#7bd0fe;
+    --ink:#e6edf3;
+    --ink-muted:#93a09a;
+    --ink-faint:#6e7681;
+    --radius:14px;
+    --card-bg:#161b22;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Roboto',sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent);color:#0a0c10;}
+
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+  .mono{font-family:'Roboto Mono',monospace;}
+
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+
+  .bg-tint{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 50% 40% at 20% -10%, rgba(255,184,110,0.04), transparent 70%),
+      radial-gradient(ellipse 45% 38% at 85% 5%, rgba(123,208,254,0.03), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 55% -15%, rgba(106,111,201,0.02), transparent 70%);
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 40px;
+    background:rgba(10, 12, 16, 0.8);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  nav.scrolled{border-bottom-color:var(--border);background:rgba(10, 12, 16, 0.92);}
+  .logo{
+    display:flex;align-items:center;gap:10px;
+  }
+  .logo-mark{
+    width:32px;height:32px;border-radius:9px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#0a0c10;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .3s ease;
+  }
+  .logo:hover .logo-mark{transform:rotate(-8deg) scale(1.06);}
+  .logo-text{
+    font-family:'Poppins',sans-serif;font-size:16.5px;color:var(--ink-muted);font-weight:400;
+    letter-spacing:0.01em;
+  }
+  .logo-text strong{color:var(--ink);font-weight:700;}
+  .nav-links{display:flex;gap:34px;font-size:14px;color:var(--ink-muted);font-family:'Roboto',sans-serif;}
+  .nav-links a{position:relative;padding:4px 0;transition:color .25s;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--accent);transition:width .25s ease;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-links a.active{color:var(--accent);}
+  .nav-links a.active::after{width:100%;}
+  .nav-cta{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:13.5px;
+    background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;
+    transition:all .25s ease;
+  }
+  .nav-cta:hover{background:var(--accent);color:var(--bg);}
+  .nav-actions{display:flex;align-items:center;gap:12px;}
+  .nav-resume{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:13.5px;color:var(--ink-muted);
+    border:1px solid var(--border-strong);padding:9px 16px;border-radius:8px;
+    transition:all .25s ease;
+  }
+  .nav-resume:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- HERO ---------- */
+  #hero{
+    position:relative;min-height:100vh;display:flex;align-items:center;
+    padding-top:80px;overflow:hidden;
+  }
+  #hero-canvas{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity 1.2s ease;}
+  #hero-canvas.ready{opacity:1;}
+  .hero-inner{position:relative;z-index:2;width:100%;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Roboto Mono',monospace;font-size:12.5px;color:var(--accent);
+    border:1px solid rgba(255,184,110,0.3);background:var(--accent-dim);
+    padding:7px 14px;border-radius:100px;margin-bottom:28px;
+    opacity:0;animation:fadeUp .8s ease .1s forwards;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
+
+  .hero-name{
+    font-size:clamp(46px,7.2vw,92px);line-height:1.02;font-weight:700;
+    color:var(--ink);max-width:900px;
+    opacity:0;animation:fadeUp .8s ease .1s forwards;
+  }
+  .hero-role{
+    margin-top:20px;font-family:'Roboto',sans-serif;font-size:19px;font-weight:500;
+    color:var(--accent);letter-spacing:0.01em;
+    opacity:0;animation:fadeUp .8s ease .26s forwards;
+  }
+  .hero-sub{
+    margin-top:18px;font-size:17px;line-height:1.7;color:var(--ink-muted);
+    max-width:600px;opacity:0;animation:fadeUp .8s ease .36s forwards;
+  }
+  .hero-actions{
+    margin-top:38px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+    opacity:0;animation:fadeUp .8s ease .5s forwards;
+  }
+  .btn-primary{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:14.5px;
+    background:var(--ink);color:var(--bg);padding:14px 26px;border-radius:9px;
+    transition:transform .25s ease, background .25s ease; display:inline-block;
+  }
+  .btn-primary:hover{background:var(--accent);transform:translateY(-2px);}
+  .btn-ghost{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:14.5px;color:var(--ink);
+    border:1px solid var(--border-strong);padding:14px 26px;border-radius:9px;
+    transition:all .25s ease;display:inline-block;background:transparent;
+  }
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+  .hero-meta{
+    margin-top:64px;display:flex;gap:48px;flex-wrap:wrap;
+    opacity:0;animation:fadeUp .8s ease .64s forwards;
+  }
+  .hero-meta div{border-left:2px solid var(--border-strong);padding-left:16px;}
+  .hero-meta .num{font-family:'Poppins',sans-serif;font-size:25px;font-weight:700;color:var(--ink);}
+  .hero-meta .lbl{font-family:'Roboto',sans-serif;font-size:12.5px;color:var(--ink-faint);margin-top:4px;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+  .scroll-cue{
+    position:absolute;bottom:36px;left:40px;z-index:2;
+    display:flex;align-items:center;gap:10px;font-family:'Roboto Mono',monospace;
+    font-size:11px;color:var(--ink-faint);letter-spacing:0.05em;
+  }
+  .scroll-cue .line{width:1px;height:34px;background:linear-gradient(var(--accent),transparent);animation:scrollline 1.8s infinite;}
+  @keyframes scrollline{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{position:relative;z-index:1;padding:120px 0;}
+  .section-head{margin-bottom:56px;}
+  .section-tag{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:13.5px;color:var(--accent);
+    letter-spacing:0.02em;margin-bottom:12px;display:block;
+  }
+  .section-title{font-size:clamp(27px,3.4vw,40px);max-width:640px;}
+  .section-title span{color:var(--ink-faint);}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- ABOUT ---------- */
+  #about .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:70px;align-items:start;}
+  #about p{font-size:16.5px;line-height:1.85;color:var(--ink-muted);margin-bottom:18px;}
+  #about p strong{color:var(--ink);font-weight:600;}
+  .about-panel{
+    border:1px solid var(--border);border-radius:var(--radius);padding:28px;background:var(--card-bg);
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  .about-panel h4{font-size:12.5px;font-family:'Roboto',sans-serif;font-weight:500;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:18px;}
+  .about-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:14.5px;}
+  .about-row:last-child{border-bottom:none;}
+  .about-row .k{color:var(--ink-muted);}
+  .about-row .v{color:var(--ink);font-family:'Roboto Mono',monospace;font-size:13px;text-align:right;}
+
+  /* ---------- SKILLS ---------- */
+  .skill-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .skill-cell{background:var(--card-bg);padding:30px 28px;}
+  .skill-cell h4{font-size:13px;font-family:'Roboto',sans-serif;font-weight:600;color:var(--accent2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:18px;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-family:'Roboto Mono',monospace;font-size:12.5px;color:var(--ink-muted);
+    border:1px solid var(--border-strong);padding:7px 12px;border-radius:7px;background:var(--bg);
+    transition:all .25s ease;
+  }
+  .tag:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+  /* ---------- EXPERIENCE / TIMELINE ---------- */
+  .timeline{border-left:2px solid var(--border);padding-left:36px;position:relative;}
+  .tl-item{position:relative;padding-bottom:8px;}
+  .tl-item::before{
+    content:'';position:absolute;left:-43px;top:6px;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 6px var(--accent);
+  }
+  .tl-date{font-family:'Roboto Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.03em;margin-bottom:8px;display:block;}
+  .tl-item h3{font-size:21px;margin-bottom:4px;}
+  .tl-org{color:var(--ink-muted);font-size:14.5px;margin-bottom:14px;}
+  .tl-item ul{list-style:none;}
+  .tl-item li{position:relative;padding-left:20px;color:var(--ink-muted);font-size:14.5px;line-height:1.7;margin-bottom:8px;}
+  .tl-item li::before{content:'—';position:absolute;left:0;color:var(--ink-faint);}
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .proj-card{
+    border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);
+    padding:30px;position:relative;overflow:hidden;transition:transform .12s ease, border-color .3s ease, box-shadow .3s ease;
+    transform-style:preserve-3d;will-change:transform;
+    box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  }
+  .proj-card:hover{border-color:rgba(255,184,110,0.4);box-shadow:0 12px 32px rgba(0,0,0,0.3);}
+  .proj-card[data-link]{cursor:pointer;}
+  .proj-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .proj-badge{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:11.5px;color:var(--accent);
+    background:var(--accent-dim);padding:6px 11px;border-radius:100px;
+  }
+  .proj-link{color:var(--ink-faint);font-size:18px;transition:color .25s, transform .25s;}
+  .proj-link:hover{color:var(--accent);transform:scale(1.15);}
+  .proj-card h3{font-size:21px;margin-bottom:10px;}
+  .proj-card>p{color:var(--ink-muted);font-size:14.5px;line-height:1.7;margin-bottom:18px;}
+  .proj-card ul{list-style:none;margin-bottom:20px;}
+  .proj-card li{position:relative;padding-left:18px;color:var(--ink-muted);font-size:13.5px;line-height:1.65;margin-bottom:7px;}
+  .proj-card li::before{content:'—';position:absolute;left:0;color:var(--ink-faint);}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .proj-tags span{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--ink-faint);border:1px solid var(--border);padding:5px 10px;border-radius:6px;}
+
+  /* ---------- RESEARCH ---------- */
+  .research-card{
+    border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);
+    padding:44px;display:grid;grid-template-columns:1fr 1.4fr;gap:50px;align-items:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  }
+  .research-card h3{font-size:25px;margin-bottom:14px;}
+  .research-card p.status{font-family:'Roboto',sans-serif;font-weight:500;font-size:12.5px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:16px;}
+  .research-card ul{list-style:none;}
+  .research-card li{position:relative;padding-left:20px;color:var(--ink-muted);font-size:14.5px;line-height:1.75;margin-bottom:10px;}
+  .research-card li::before{content:'—';position:absolute;left:0;color:var(--accent2);}
+  .node-visual{position:relative;height:220px;display:flex;align-items:center;justify-content:center;}
+  #research-canvas{width:100%;height:100%;}
+
+  /* ---------- CERTS ---------- */
+  .cert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .cert-item{
+    border:1px solid var(--border);border-radius:10px;padding:20px 18px;background:var(--card-bg);
+    font-size:13.5px;color:var(--ink-muted);line-height:1.5;transition:border-color .25s, transform .25s;
+  }
+  .cert-item:hover{border-color:var(--accent);transform:translateY(-2px);}
+
+  /* ---------- CONTACT ---------- */
+  #contact{text-align:center;}
+  #contact .section-title{margin:0 auto 24px;}
+  #contact p{color:var(--ink-muted);font-size:16.5px;max-width:520px;margin:0 auto 44px;line-height:1.7;}
+  .contact-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:70px;}
+  .contact-links a{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:14px;border:1px solid var(--border-strong);
+    padding:14px 24px;border-radius:9px;transition:all .25s ease;background:var(--card-bg);
+  }
+  .contact-links a:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;align-items:center;font-family:'Roboto',sans-serif;font-size:13px;color:var(--ink-faint);}
+
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    #about .about-grid{grid-template-columns:1fr;}
+    .skill-groups{grid-template-columns:1fr;}
+    .proj-grid{grid-template-columns:1fr;}
+    .research-card{grid-template-columns:1fr;padding:30px;}
+    .cert-grid{grid-template-columns:repeat(2,1fr);}
+    .hero-meta{gap:30px;}
+    footer{flex-direction:column;gap:10px;text-align:center;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-tint"></div>
+<nav id="nav">
+<div class="logo"><span class="logo-mark">SV</span><span class="logo-text">the<strong>Vamshi</strong></span></div>
+<div class="nav-links">
+<a href="#about">About</a>
+<a href="#skills">Skills</a>
+<a href="#experience">Experience</a>
+<a href="#projects">Projects</a>
+<a href="#research">Research</a>
+<a href="#contact">Contact</a>
+</div>
+<div class="nav-actions">
+<a class="nav-resume" href="resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
+<a class="nav-cta" href="#contact">Get in touch</a>
+</div>
+</nav>
+<section id="hero">
+<canvas id="hero-canvas"></canvas>
+<div class="wrap hero-inner">
+<div class="eyebrow"><span class="dot"></span>OPEN TO OPPORTUNITIES</div>
+<h1 class="hero-name">Sai Vamshi<br/>Danthoju</h1>
+<p class="hero-role">Full-Stack Engineer · Cloud &amp; Secure IoT Systems</p>
+<p class="hero-sub">I design full-stack applications, cloud architectures, and connected devices with security built in from the ground up, not bolted on after.</p>
+<div class="hero-actions">
+<a class="btn-primary" href="#projects">View Projects →</a>
+<a class="btn-ghost" href="#contact">Contact Me</a>
+<a class="btn-ghost" href="resume.pdf" target="_blank" rel="noopener noreferrer">Resume ↓</a>
+</div>
+<div class="hero-meta">
+<div><div class="num">4+</div><div class="lbl">Shipped Projects</div></div>
+<div><div class="num">4</div><div class="lbl">AWS Services Architected</div></div>
+<div><div class="num">8</div><div class="lbl">Certifications</div></div>
+<div><div class="num">2</div><div class="lbl">Threat-Intel APIs Integrated</div></div>
+</div>
+</div>
+<div class="scroll-cue"><div class="line"></div>SCROLL</div>
+</section>
+<section id="about">
+<div class="wrap">
+<div class="about-grid">
+<div class="reveal">
+<span class="section-tag">About</span>
+<h2 class="section-title" style="margin-bottom:30px;">Engineering at the intersection of software and security.</h2>
+<p>I work across the full stack — <strong>React, Node.js, and MongoDB</strong> — while spending equal time in <strong>AWS cloud architecture</strong> and <strong>applied cybersecurity</strong>. That combination shapes how I build: authentication and data isolation aren't an afterthought, they're part of the design brief from day one.</p>
+<p>Recently that's meant architecting a multi-tenant SaaS platform on serverless AWS infrastructure, building an ESP32-based IoT energy meter that streams live sensor data to a React dashboard, and developing malware and phishing detection tools that lean on real threat-intelligence APIs. I'm currently extending that work into a secure IoT framework for EV sensor networks as part of an ongoing research initiative.</p>
+</div>
+<div class="reveal about-panel">
+<h4>Currently</h4>
+<div class="about-row"><span class="k">Role</span><span class="v">MERN Stack Intern</span></div>
+<div class="about-row"><span class="k">Company</span><span class="v">Emertxe Info. Tech.</span></div>
+<div class="about-row"><span class="k">Focus</span><span class="v">Cloud · IoT · Security</span></div>
+<div class="about-row"><span class="k">Based in</span><span class="v">Hyderabad, IN</span></div>
+<div class="about-row"><span class="k">Status</span><span class="v" style="color:var(--accent)">● Available</span></div>
+</div>
+</div>
+</div>
+</section>
+<section id="skills">
+<div class="wrap">
+<div class="section-head reveal">
+<span class="section-tag">Stack</span>
+<h2 class="section-title">Tools I reach for, grouped by what they solve.</h2>
+</div>
+<div class="skill-groups reveal">
+<div class="skill-cell">
+<h4>Languages &amp; Core</h4>
+<div class="tag-row">
+<span class="tag">Python</span><span class="tag">Java</span><span class="tag">C</span><span class="tag">SQL</span>
+<span class="tag">DSA</span><span class="tag">OOP</span><span class="tag">DBMS</span><span class="tag">OS</span><span class="tag">Networks</span>
+</div>
+</div>
+<div class="skill-cell">
+<h4>Full-Stack Web</h4>
+<div class="tag-row">
+<span class="tag">React.js</span><span class="tag">Node.js</span><span class="tag">Express.js</span>
+<span class="tag">HTML5</span><span class="tag">Tailwind CSS</span><span class="tag">MongoDB</span><span class="tag">MySQL</span>
+</div>
+</div>
+<div class="skill-cell">
+<h4>Cloud, Security &amp; Tools</h4>
+<div class="tag-row">
+<span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Cognito</span><span class="tag">Lambda</span>
+<span class="tag">Git / GitHub</span><span class="tag">Postman</span><span class="tag">VS Code</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="experience">
+<div class="wrap">
+<div class="section-head reveal">
+<span class="section-tag">Experience</span>
+<h2 class="section-title">Where I've put this to work.</h2>
+</div>
+<div class="timeline reveal">
+<div class="tl-item">
+<span class="tl-date">AUG 2026 — PRESENT</span>
+<h3>MERN Stack Intern</h3>
+<div class="tl-org">Emertxe Information Technologies · Remote</div>
+<ul>
+<li>Selected for an 8-week remote MERN Stack Internship Program.</li>
+<li>Building HomelyHub, a property booking platform, with user authentication, RESTful APIs, and MongoDB integration.</li>
+<li>Applying Git-based version control and collaborative development practices across the full stack.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="projects">
+<div class="wrap">
+<div class="section-head reveal">
+<span class="section-tag">Selected Work</span>
+<h2 class="section-title">Four projects, four different problems.</h2>
+</div>
+<div class="proj-grid">
+<div class="proj-card reveal">
+<div class="proj-top">
+<span class="proj-badge">Cloud / SaaS</span>
+<a class="proj-link" href="#" title="Add your project link">↗</a>
+</div>
+<h3>Multi-Tenant SaaS Application</h3>
+<p>A cloud-native platform architected around four AWS services, built for tenant isolation and role-based access at its core.</p>
+<ul>
+<li>Role-based auth for Admin and User roles via Amazon Cognito</li>
+<li>5+ serverless REST APIs via API Gateway and Lambda</li>
+<li>Security protocols in Amazon RDS cut unauthorized access by 95%</li>
+</ul>
+<div class="proj-tags"><span>Cognito</span><span>API Gateway</span><span>Lambda</span><span>RDS</span></div>
+</div>
+<div class="proj-card reveal" data-link="https://github.com/saivamshidanthoju/gridsense-smart-energy-monitor">
+<div class="proj-top">
+<span class="proj-badge">IoT / Real-time</span>
+<a class="proj-link" href="https://github.com/saivamshidanthoju/gridsense-smart-energy-monitor" target="_blank" rel="noopener noreferrer">↗</a>
+</div>
+<h3>GridSense — Secure Smart Energy Meter</h3>
+<p>An ESP32-based IoT system that tracks live electrical parameters and predicts electricity bills from streaming sensor data.</p>
+<ul>
+<li>Real-time monitoring of voltage, current, power, and energy</li>
+<li>Live kWh calculation and bill prediction, 18% better forecasting</li>
+<li>React dashboard fed by MQTT, persisted to MongoDB Atlas</li>
+</ul>
+<div class="proj-tags"><span>ESP32</span><span>React</span><span>MQTT</span><span>MongoDB Atlas</span></div>
+</div>
+<div class="proj-card reveal" data-link="https://github.com/saivamshidanthoju/VeloraSec">
+<div class="proj-top">
+<span class="proj-badge">Security</span>
+<a class="proj-link" href="https://github.com/saivamshidanthoju/VeloraSec" target="_blank" rel="noopener noreferrer">↗</a>
+</div>
+<h3>VeloraSec — Malware Detection &amp; Threat Analysis</h3>
+<p>A Python CLI tool that classifies files by threat level using two live threat-intelligence APIs.</p>
+<ul>
+<li>Integrates VirusTotal and MalwareBazaar for verdicts and YARA matches</li>
+<li>SHA-256 hashing sorts files into Safe / Suspicious / Malicious</li>
+<li>Generates structured CLI security reports</li>
+</ul>
+<div class="proj-tags"><span>Python</span><span>VirusTotal API</span><span>MalwareBazaar API</span><span>SHA-256</span></div>
+</div>
+<div class="proj-card reveal" data-link="https://github.com/saivamshidanthoju/website-vulnerability-detector">
+<div class="proj-top">
+<span class="proj-badge">Machine Learning</span>
+<a class="proj-link" href="https://github.com/saivamshidanthoju/website-vulnerability-detector" target="_blank" rel="noopener noreferrer">↗</a>
+</div>
+<h3>Website Vulnerability Detection using ML</h3>
+<p>A desktop application that classifies URLs for phishing risk using trained Scikit-learn models.</p>
+<ul>
+<li>Feature-based URL classification across 3 trained models</li>
+<li>PyQt desktop app for on-demand vulnerability assessment</li>
+<li>Outputs readable phishing-risk reports</li>
+</ul>
+<div class="proj-tags"><span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>PyQt</span></div>
+</div>
+</div>
+</div>
+</section>
+<section id="research">
+<div class="wrap">
+<div class="section-head reveal">
+<span class="section-tag">Research</span>
+<h2 class="section-title">Extending secure IoT design into EV networks.</h2>
+</div>
+<div class="research-card reveal">
+<div class="node-visual"><canvas id="research-canvas"></canvas></div>
+<div>
+<p class="status">Ongoing — Department of IT</p>
+<h3>Secure IoT Framework for EV Sensor Networks</h3>
+<ul>
+<li>Proposing a secure EV IoT architecture across ESP32, Raspberry Pi, Jetson Nano, and CAN Bus</li>
+<li>Implementing sensor-level encryption between embedded devices</li>
+<li>Integrating AI-based anomaly detection for abnormal sensor behavior</li>
+<li>Designing secure OTA firmware updates for connected EV devices</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="certs">
+<div class="wrap">
+<div class="section-head reveal">
+<span class="section-tag">Certifications</span>
+<h2 class="section-title">Credentials earned along the way.</h2>
+</div>
+<div class="cert-grid reveal">
+<div class="cert-item">AWS Academy Graduate — Cloud Foundations</div>
+<div class="cert-item">Oracle Academy — Database Programming with SQL</div>
+<div class="cert-item">Linux Foundation — Cybersecurity Essentials (LFC108)</div>
+<div class="cert-item">Cisco Networking Academy — Linux Essentials</div>
+<div class="cert-item">Goldman Sachs Software Engineering Simulation</div>
+<div class="cert-item">Infosys Springboard — Internet of Things</div>
+<div class="cert-item">Saylor Academy — CS401: Operating Systems</div>
+<div class="cert-item">ISC2 Certified in Cybersecurity (CC) — in progress</div>
+</div>
+</div>
+</section>
+<section id="contact">
+<div class="wrap">
+<span class="section-tag">Contact</span>
+<h2 class="section-title">Let's build something secure together.</h2>
+<p>I'm currently open to internship and full-stack / cloud engineering opportunities. The fastest way to reach me is email.</p>
+<div class="contact-links">
+<a href="mailto:saivamshidanthoju@gmail.com" rel="noopener noreferrer" target="_blank">saivamshidanthoju@gmail.com</a>
+<a href="tel:+918374170152" rel="noopener noreferrer" target="_blank">+91 83741 70152</a>
+<a href="#" id="linkedin-link" rel="noopener noreferrer" target="_blank" title="Add your LinkedIn URL">LinkedIn ↗</a>
+<a href="https://github.com/saivamshidanthoju" id="github-link" rel="noopener noreferrer" target="_blank">GitHub ↗</a>
+<a href="resume.pdf" rel="noopener noreferrer" target="_blank">Resume ↓</a>
+</div>
+</div>
+<div class="wrap">
+<footer>
+<span>© 2026 Sai Vamshi Danthoju</span>
+<span>Hyderabad, India</span>
+</footer>
+</div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---------- NAV SCROLL STATE ---------- */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+/* ---------- SCROLL REVEAL ---------- */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.15 });
+revealEls.forEach(el => io.observe(el));
+
+/* ---------- ACTIVE NAV LINK ON SCROLL ---------- */
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href')));
+const navIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting){
+      const id = '#' + entry.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+    }
+  });
+}, { rootMargin: '-45% 0px -50% 0px' });
+sections.forEach(sec => { if (sec) navIO.observe(sec); });
+
+/* ---------- PROJECT CARD 3D TILT ---------- */
+document.querySelectorAll('.proj-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-3px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) translateY(0)'; });
+});
+
+/* ---------- WHOLE-CARD CLICK TO OPEN PROJECT LINK ---------- */
+document.querySelectorAll('.proj-card[data-link]').forEach(card => {
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return; // let the arrow icon's own link handle itself
+    window.open(card.getAttribute('data-link'), '_blank', 'noopener,noreferrer');
+  });
+});
+
+/* ---------- HERO 3D NETWORK (luminous dark theme) ---------- */
+(function heroScene(){
+  const canvas = document.getElementById('hero-canvas');
+  const heroSection = document.getElementById('hero');
+  let width = heroSection.clientWidth, height = heroSection.clientHeight;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, width/height, 0.1, 100);
+  camera.position.set(0, 0, 16);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const NODES = 90;
+  const radius = 6.2;
+  const positions = [];
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < NODES; i++) {
+    const y = 1 - (i / (NODES - 1)) * 2;
+    const r = Math.sqrt(1 - y * y);
+    const theta = goldenAngle * i;
+    const x = Math.cos(theta) * r;
+    const z = Math.sin(theta) * r;
+    positions.push(new THREE.Vector3(x * radius, y * radius, z * radius));
+  }
+
+  // Obsidian Kinetic palette — Luminous amber, indigo, coral, gold
+  const palette = [
+    new THREE.Color(0xffb86e), // Amber
+    new THREE.Color(0x7bd0fe), // Sky/Indigo
+    new THREE.Color(0xff7b72), // Luminous Coral
+    new THREE.Color(0xffd33d)  // Luminous Gold
+  ];
+  const basePositions = new Float32Array(positions.length * 3);
+  const colors = new Float32Array(positions.length * 3);
+  const sizes = new Float32Array(positions.length);
+  positions.forEach((p, i) => {
+    basePositions[i*3] = p.x; basePositions[i*3+1] = p.y; basePositions[i*3+2] = p.z;
+    const c = palette[i % palette.length];
+    colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+    sizes[i] = 0.08 + Math.random() * 0.09;
+  });
+
+  const pointGeo = new THREE.BufferGeometry();
+  pointGeo.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3));
+  pointGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const pointMat = new THREE.PointsMaterial({ size: 0.18, vertexColors: true, transparent:true, opacity:0.9, sizeAttenuation:true });
+  const points = new THREE.Points(pointGeo, pointMat);
+  group.add(points);
+
+  const lineVerts = [];
+  const maxDist = 2.6;
+  for (let i = 0; i < positions.length; i++) {
+    for (let j = i + 1; j < positions.length; j++) {
+      if (positions[i].distanceTo(positions[j]) < maxDist) {
+        lineVerts.push(positions[i].x, positions[i].y, positions[i].z);
+        lineVerts.push(positions[j].x, positions[j].y, positions[j].z);
+      }
+    }
+  }
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineVerts, 3));
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x7bd0fe, transparent:true, opacity:0.12 });
+  const lines = new THREE.LineSegments(lineGeo, lineMat);
+  group.add(lines);
+
+  const highlightIdx = [4, 22, 51, 70, 33];
+  const highlightPositions = highlightIdx.map(i => positions[i]);
+  const highlightGeo = new THREE.BufferGeometry().setFromPoints(highlightPositions);
+  const highlightMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.28, transparent:true, opacity:0.95, sizeAttenuation:true });
+  const highlightPoints = new THREE.Points(highlightGeo, highlightMat);
+  group.add(highlightPoints);
+
+  group.rotation.x = 0.3;
+  group.position.x = 5.2;
+
+  let mouseX = 0, mouseY = 0, targetRotY = 0, targetRotX = 0.3;
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) - 0.5;
+    mouseY = (e.clientY / window.innerHeight) - 0.5;
+  });
+
+  function onResize(){
+    width = heroSection.clientWidth; height = heroSection.clientHeight;
+    camera.aspect = width/height; camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+  window.addEventListener('resize', onResize);
+
+  const posAttr = pointGeo.getAttribute('position');
+  let t = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t += 0.0035;
+    targetRotY += (mouseX * 0.6 - targetRotY) * 0.02;
+    targetRotX += ((0.3 + mouseY * 0.3) - targetRotX) * 0.02;
+    group.rotation.y = t + targetRotY;
+    group.rotation.x = targetRotX;
+    highlightMat.opacity = 0.5 + Math.sin(t * 4) * 0.4;
+
+    for (let i = 0; i < positions.length; i++){
+      const bx = basePositions[i*3], by = basePositions[i*3+1], bz = basePositions[i*3+2];
+      const wob = Math.sin(t * 2.5 + i) * 0.07;
+      posAttr.array[i*3]   = bx + wob;
+      posAttr.array[i*3+1] = by + wob;
+      posAttr.array[i*3+2] = bz + wob;
+    }
+    posAttr.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+  requestAnimationFrame(() => canvas.classList.add('ready'));
+})();
+
+/* ---------- RESEARCH MINI NETWORK ---------- */
+(function researchScene(){
+  const canvas = document.getElementById('research-canvas');
+  const parent = canvas.parentElement;
+  let width = parent.clientWidth, height = parent.clientHeight || 220;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, width/height, 0.1, 100);
+  camera.position.set(0, 0, 8);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const nodePositions = [
+    new THREE.Vector3(-2.4, 1.3, 0),
+    new THREE.Vector3(2.2, 1.6, -0.6),
+    new THREE.Vector3(-1.6, -1.5, 0.4),
+    new THREE.Vector3(2.0, -1.2, 0.2),
+    new THREE.Vector3(0, 0.1, 1.2)
+  ];
+
+  const nodeGeo = new THREE.SphereGeometry(0.15, 16, 16);
+  const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffb86e });
+  nodePositions.forEach(p => {
+    const m = new THREE.Mesh(nodeGeo, nodeMat);
+    m.position.copy(p);
+    group.add(m);
+  });
+
+  const lineVerts = [];
+  for (let i = 0; i < nodePositions.length; i++){
+    for (let j = i+1; j < nodePositions.length; j++){
+      lineVerts.push(nodePositions[i].x, nodePositions[i].y, nodePositions[i].z);
+      lineVerts.push(nodePositions[j].x, nodePositions[j].y, nodePositions[j].z);
+    }
+  }
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineVerts, 3));
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x7bd0fe, transparent:true, opacity:0.3 });
+  group.add(new THREE.LineSegments(lineGeo, lineMat));
+
+  function onResize(){
+    width = parent.clientWidth; height = parent.clientHeight || 220;
+    camera.aspect = width/height; camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+  window.addEventListener('resize', onResize);
+
+  let t = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t += 0.006;
+    group.rotation.y = t;
+    group.rotation.x = Math.sin(t * 0.5) * 0.15;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+</body></html>
