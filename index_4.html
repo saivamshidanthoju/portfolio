@@ -87,6 +87,13 @@
     transition:all .25s ease;
   }
   .nav-cta:hover{background:var(--accent);color:var(--bg);}
+  .nav-actions{display:flex;align-items:center;gap:12px;}
+  .nav-resume{
+    font-family:'Roboto',sans-serif;font-weight:500;font-size:13.5px;color:var(--ink-muted);
+    border:1px solid var(--border-strong);padding:9px 16px;border-radius:8px;
+    transition:all .25s ease;
+  }
+  .nav-resume:hover{border-color:var(--accent);color:var(--accent);}
 
   /* ---------- HERO ---------- */
   #hero{
@@ -295,7 +302,10 @@
 <a href="#research">Research</a>
 <a href="#contact">Contact</a>
 </div>
+<div class="nav-actions">
+<a class="nav-resume" href="resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
 <a class="nav-cta" href="#contact">Get in touch</a>
+</div>
 </nav>
 <section id="hero">
 <canvas id="hero-canvas"></canvas>
@@ -307,6 +317,7 @@
 <div class="hero-actions">
 <a class="btn-primary" href="#projects">View Projects →</a>
 <a class="btn-ghost" href="#contact">Contact Me</a>
+<a class="btn-ghost" href="resume.pdf" target="_blank" rel="noopener noreferrer">Resume ↓</a>
 </div>
 <div class="hero-meta">
 <div><div class="num">4+</div><div class="lbl">Shipped Projects</div></div>
@@ -503,6 +514,7 @@
 <a href="tel:+918374170152" rel="noopener noreferrer" target="_blank">+91 83741 70152</a>
 <a href="#" id="linkedin-link" rel="noopener noreferrer" target="_blank" title="Add your LinkedIn URL">LinkedIn ↗</a>
 <a href="https://github.com/saivamshidanthoju" id="github-link" rel="noopener noreferrer" target="_blank">GitHub ↗</a>
+<a href="resume.pdf" rel="noopener noreferrer" target="_blank">Resume ↓</a>
 </div>
 </div>
 <div class="wrap">
@@ -637,6 +649,7 @@ document.querySelectorAll('.proj-card[data-link]').forEach(card => {
   group.add(highlightPoints);
 
   group.rotation.x = 0.3;
+  group.position.x = 5.2;
 
   let mouseX = 0, mouseY = 0, targetRotY = 0, targetRotX = 0.3;
   window.addEventListener('mousemove', (e) => {
